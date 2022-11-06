@@ -15,6 +15,7 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
+    @CrossOrigin(origins = "*")
     @PostMapping("/add-post/")
     public void addPost(@RequestParam("title")String title,
                         @RequestParam("description")String description,
@@ -26,16 +27,19 @@ public class PostController {
         postService.addNewPost(title,time,description,videoURL,postType,file);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/get-posts/")
     public List<Post> getPostsByType(@RequestParam("postType")String postType){
         return postService.getPostsByType(postType);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/get-all-posts")
     public List<Post> getAllPosts(){
         return postService.getAllPosts();
     }
 
+    @CrossOrigin(origins = "*")
     @PutMapping("/update-post")
     public void updatePost(@RequestParam("title") String title,
                            @RequestParam("id")String id,
@@ -45,11 +49,13 @@ public class PostController {
         postService.updatePost(id,title,description,postType,videoURL);
     }
 
+    @CrossOrigin(origins = "*")
     @DeleteMapping("/delete-post/{id}")
     public void deletePost(@PathVariable("id") String id){
         postService.deletePost(id);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/search-post/{title}")
     public List<Post> searchByTitle(@PathVariable("title")String title){
         return postService.search(title);
