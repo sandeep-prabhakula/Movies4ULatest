@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.bson.BsonBinarySubType;
 import org.bson.Document;
 import org.bson.types.Binary;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,7 @@ public class PostService {
     private final MongoClient mongoClient;
     private final MongoConverter converter;
 
+    @CacheEvict(value="posts",allEntries = true)
     public void addNewPost(String title, long time, String description, String videoURL, String postType, MultipartFile file) throws IOException {
         Post newPost = new Post();
         newPost.setTitle(title);
@@ -44,10 +47,12 @@ public class PostService {
         return posts;
     }
 
+    @Cacheable(value = "posts")
     public List<Post> getAllPosts() {
         return postRepository.findAll();
     }
 
+    @CacheEvict(value = "posts",allEntries = true)
     public void updatePost(String id, String title, String description, String postType, String videoURL) {
         Post currentPost = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(
@@ -60,6 +65,7 @@ public class PostService {
         postRepository.save(currentPost);
     }
 
+    @CacheEvict(value = "posts",allEntries = true,key = "#id")
     public void deletePost(String id) {
         postRepository.deleteById(id);
     }
